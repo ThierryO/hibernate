@@ -16,6 +16,7 @@ Imports:
     INLA,
     assertthat,
     dplyr,
+    ggnewscale,
     ggplot2,
     git2rdata,
     lubridate,
