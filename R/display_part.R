@@ -5,6 +5,8 @@
 #' @param label Which labels to display on the labelled spaces?
 #' `code` is the short code, `ìd` is the internal id, `none` hides the labels.
 #' @param connection Display optional connections between the centroids.
+#' @param rotate Rotate the part along the general direction of the object.
+#' Default to `TRUE`.
 #' @inheritParams sf::st_transform
 #' @export
 #' @importFrom assertthat assert_that is.count is.flag noNA
@@ -17,23 +19,12 @@
 #' @importFrom tidyr extract pivot_longer starts_with
 display_part <- function(
   part_id, root, label = c("code", "id", "none"), connection = FALSE,
-  crs = 31370
+  rotate = TRUE, crs = 31370
 ) {
   assert_that(is.count(part_id))
   label <- match.arg(label)
   assert_that(is.flag(connection), noNA(connection))
-  read_vc("part", root = root) %>%
-    filter(.data$id == part_id) -> part_title
-  part_title %>%
-    pivot_longer(starts_with("offset"), names_to = "var") %>%
-    extract(
-      .data$var, into = c("floor", "dir"), "offset([0-9]+)_([x|y])",
-      convert = TRUE
-    ) %>%
-    select(.data$floor, .data$dir, .data$value) %>%
-    arrange(.data$dir) %>%
-    group_by(.data$floor) %>%
-    summarise(shift = list(.data$value)) -> shift
+  assert_that(is.flag(rotate), noNA(rotate))
   file.path(root$path, "..", "floor_plan.geojson") %>%
     read_sf() %>%
     inner_join(
@@ -43,10 +34,34 @@ display_part <- function(
     ) %>%
     left_join(read_vc("space", root = root), by = "id") %>%
     select("id", "structure", "floor", "code") %>%
-    st_transform(crs = crs) %>%
+    st_transform(crs = crs) -> part_base
+  read_vc("part", root = root) %>%
+    filter(.data$id == part_id) -> part_title
+  bb <- st_bbox(part_base)
+  part_title %>%
+    pivot_longer(starts_with("offset"), names_to = "var") %>%
+    extract(
+      .data$var, into = c("floor", "dir"), "offset([0-9]+)_([x|y])",
+      convert = TRUE
+    ) %>%
+    inner_join(
+      data.frame(
+        dir = c("x", "y"),
+        centre = c(mean(c(bb$xmin, bb$xmax)), mean(c(bb$ymin, bb$ymax)))
+      ),
+      by = "dir"
+    ) %>%
+    transmute(.data$floor, .data$dir, value = .data$value - .data$centre) %>%
+    arrange(.data$dir) %>%
+    group_by(.data$floor) %>%
+    summarise(shift = list(.data$value)) -> shift
+  read_vc("object", root = root) %>%
+    semi_join(part_title, by = c("id" = "object")) -> angle
+  part_base %>%
     inner_join(shift, by = "floor") %>%
-    mutate(geometry = .data$geometry + .data$shift) %>%
-    `st_crs<-`(crs) -> part_data
+    mutate(
+      geometry = (.data$geometry + .data$shift) * rotation(angle$angle)
+    ) -> part_data
   suppressWarnings({
     part_data %>%
       filter(!is.na(.data$code)) %>%
@@ -90,4 +105,11 @@ display_part <- function(
       labs(title = part_title$name)
   }
   return(p + coord_sf(datum = crs))
+}
+
+#' @importFrom assertthat assert_that is.number
+rotation <- function(degrees) {
+  assert_that(is.number(degrees))
+  radians <- degrees * pi / 180
+  matrix(c(cos(radians), sin(radians), -sin(radians), cos(radians)), 2, 2)
 }

@@ -9,6 +9,7 @@ display_part(
   root,
   label = c("code", "id", "none"),
   connection = FALSE,
+  rotate = TRUE,
   crs = 31370
 )
 }
@@ -21,6 +22,9 @@ display_part(
 \code{code} is the short code, \code{ìd} is the internal id, \code{none} hides the labels.}
 
 \item{connection}{Display optional connections between the centroids.}
+
+\item{rotate}{Rotate the part along the general direction of the object.
+Default to \code{TRUE}.}
 
 \item{crs}{target coordinate reference system: object of class `crs`, or input string for \link[sf]{st_crs}}
 }
