@@ -1,4 +1,10 @@
 #' Add a survey
+#' @param date the date of the survey
+#' @param observers a vector of observer ids.
+#' @param lead_observer the observer id of the lead observer.
+#' @param space a vector of space codes.
+#' @param space_species a data.frame with space, species and count
+#' @inheritParams validate_data
 #' @export
 #' @importFrom assertthat assert_that has_name is.count noNA
 #' @importFrom dplyr %>% bind_rows filter group_by inner_join left_join mutate
@@ -58,7 +64,7 @@ add_survey <- function(
     group_by(.data$id) %>%
     summarise(total = as.integer(sum(.data$count))) %>%
     left_join(x = new_ss, by = "id") %>%
-    mutate(total = replace_na(total, 0L)) %>%
+    mutate(total = replace_na(.data$total, 0L)) %>%
     bind_rows(existing_ss) %>%
     write_vc(file = "survey_space", root = root)
   new_sss %>%

@@ -1,6 +1,10 @@
 #' Create a network for the connected spaces
 #' @inheritParams aggregate_observations
 #' @inheritParams validate_data
+#' @param direct_only When `TRUE`, use only direct connections (through existing
+#' openings).
+#' When `FALSE` use also connections to the nearest space through a wall.
+#' Defaults to `FALSE`
 #' @export
 #' @importFrom assertthat assert_that is.flag is.string noNA
 #' @importFrom dplyr %>% arrange filter left_join select semi_join

@@ -1,5 +1,5 @@
 #' Aggregate observations at a species level
-#' @param species id of the species
+#' @param species_code code of the species
 #' @param object_name the name of the object
 #' @inheritParams validate_data
 #' @export

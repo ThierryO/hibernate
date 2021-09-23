@@ -9,6 +9,11 @@ get_network(object_name, direct_only = FALSE, root)
 \arguments{
 \item{object_name}{the name of the object}
 
+\item{direct_only}{When \code{TRUE}, use only direct connections (through existing
+openings).
+When \code{FALSE} use also connections to the nearest space through a wall.
+Defaults to \code{FALSE}}
+
 \item{root}{Either a \code{git_repository} object or the path to a git repository}
 }
 \description{

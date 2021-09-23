@@ -7,11 +7,11 @@
 aggregate_observations(species_code, object_name, root)
 }
 \arguments{
+\item{species_code}{code of the species}
+
 \item{object_name}{the name of the object}
 
 \item{root}{Either a \code{git_repository} object or the path to a git repository}
-
-\item{species}{id of the species}
 }
 \description{
 Aggregate observations at a species level

@@ -6,6 +6,19 @@
 \usage{
 add_survey(date, observers, lead_observer, space, space_species, root)
 }
+\arguments{
+\item{date}{the date of the survey}
+
+\item{observers}{a vector of observer ids.}
+
+\item{lead_observer}{the observer id of the lead observer.}
+
+\item{space}{a vector of space codes.}
+
+\item{space_species}{a data.frame with space, species and count}
+
+\item{root}{Either a \code{git_repository} object or the path to a git repository}
+}
 \description{
 Add a survey
 }

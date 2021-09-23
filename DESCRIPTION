@@ -13,13 +13,16 @@ License: GPL-3
 URL: https://github.com/thierryo/hibernate
 BugReports: https://github.com/thierryo/hibernate/issues
 Imports:
+    INLA,
     assertthat,
     dplyr,
     ggplot2,
     git2rdata,
+    lubridate,
     rlang,
     sf,
     tidyr
+Additional_repositories: https://inla.r-inla-download.org/R/testing
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
