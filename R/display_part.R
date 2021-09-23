@@ -13,7 +13,7 @@
 #' @importFrom ggplot2 aes aes_string coord_sf ggplot geom_sf geom_sf_label
 #' labs scale_fill_manual
 #' @importFrom git2rdata read_vc
-#' @importFrom sf read_sf st_cast st_centroid st_transform
+#' @importFrom sf read_sf st_cast st_centroid st_crs<- st_transform
 #' @importFrom tidyr extract pivot_longer starts_with
 display_part <- function(
   part_id, root, label = c("code", "id", "none"), connection = FALSE,
@@ -45,10 +45,13 @@ display_part <- function(
     select("id", "structure", "floor", "code") %>%
     st_transform(crs = crs) %>%
     inner_join(shift, by = "floor") %>%
-    mutate(geometry = .data$geometry + .data$shift) -> part_data
-  part_data %>%
-    filter(!is.na(.data$code)) %>%
-    st_centroid() -> centroids
+    mutate(geometry = .data$geometry + .data$shift) %>%
+    `st_crs<-`(crs) -> part_data
+  suppressWarnings({
+    part_data %>%
+      filter(!is.na(.data$code)) %>%
+      st_centroid() -> centroids
+  })
   p <- ggplot(part_data) +
     geom_sf(aes(fill = .data$structure), show.legend = FALSE) +
     scale_fill_manual(
@@ -63,16 +66,19 @@ display_part <- function(
         centroids %>%
           inner_join(connections, by = c("id" = "to"))
       ) %>%
-      select(.data$connection_id, .data$floor) -> connected
+      select(.data$connection_id, .data$floor, .data$direct) -> connected
     if (nrow(connected) > 0) {
       connected %>%
         group_by(.data$connection_id) %>%
         summarise(
-          delta = sprintf("%i - %i", min(.data$floor), max(.data$floor))
+          delta = sprintf("%i - %i", min(.data$floor), max(.data$floor)),
+          direct = unique(.data$direct)
         ) %>%
         st_cast("LINESTRING") -> connected
       p <- p +
-        geom_sf(data = connected, aes(linetype = .data$delta), color = "red")
+        geom_sf(
+          data = connected, aes(linetype = .data$delta, colour = .data$direct)
+        )
     }
   }
   if (label != "none") {
