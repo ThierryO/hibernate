@@ -1,3 +1,7 @@
+# hibernate 0.0.1
+
+* Add `validate_data()`.
+
 # hibernate 0.0.0
 
-* Added a `NEWS.md` file to track changes to the package.
+* Initial version of the package.
