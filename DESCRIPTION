@@ -15,8 +15,10 @@ BugReports: https://github.com/thierryo/hibernate/issues
 Imports:
     assertthat,
     dplyr,
+    ggplot2,
     git2rdata,
     rlang,
+    sf,
     tidyr
 Encoding: UTF-8
 LazyData: true
