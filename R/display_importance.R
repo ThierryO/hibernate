@@ -27,7 +27,7 @@ display_importance <- function(
     ) %>%
     inner_join(read_vc("space", root = root), by = c("space" = "code")) %>%
     select(.data$id, .data$space, .data$mean, .data$lcl, .data$ucl) -> rf
-  file.path(attr(model, "root"), "floor_plan.geojson") %>%
+  file.path(attr(model, "root")$path, "..", "floor_plan.geojson") %>%
     read_sf() %>%
     inner_join(read_vc("floor_plan", root = root), by = "id") %>%
     inner_join(read_vc("part", root = root), by = c("part" = "id")) %>%

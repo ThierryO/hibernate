@@ -5,12 +5,16 @@
 #' @export
 #' @importFrom dplyr %>% bind_rows distinct filter group_by inner_join mutate
 #' transmute ungroup
+#' @importFrom git2rdata repository
 #' @importFrom INLA inla
 #' @importFrom lubridate round_date year
 #' @importFrom tidyr complete
 imputation_model <- function(
   species_code, object_name, root, direct_only = FALSE
 ) {
+  if (!inherits(root, "git_repository")) {
+    root <- repository(root)
+  }
   aggregate_observations(
     species_code = species_code, object_name = object_name, root = root
   ) %>%
@@ -38,9 +42,9 @@ imputation_model <- function(
       year = round_date(.data$date, unit = "years") %>%
         year(),
       space = factor(.data$space, levels = colnames(network)),
-      .data$count
+      observed = .data$count
     ) %>%
-    complete(.data$year, .data$space) %>%
+    complete(year = min(.data$year):max(.data$year), .data$space) %>%
     mutate(cyear = .data$year - max(.data$year)) %>%
     inner_join(
       survey_data %>%
@@ -49,40 +53,39 @@ imputation_model <- function(
     ) -> model_data
   model_data %>%
     transmute(
-      zero_year = .data$year, zero_cyear = .data$cyear,
-      zero_space = .data$space, zero_intercept = 1,
-      zero = as.integer(.data$count == 0), link = 1,
+      zero_year = .data$year, zero_cyear = .data$cyear, .data$observed,
+      zero_space = factor(.data$space), zero_intercept = 1,
+      zero = as.integer(.data$observed == 0), link = 1,
       zero_space_int = as.integer(.data$space), zero_part = factor(.data$part)
     ) %>%
     bind_rows(
       model_data %>%
         mutate(
-          count = ifelse(.data$count > 0, .data$count, NA),
+          space = factor(.data$space), part = factor(.data$part),
+          count = ifelse(.data$observed > 0, .data$observed, NA),
           link = 2, intercept = 1, space_int = as.integer(.data$space)
         )
-    ) -> analysis_data
+    ) %>%
+    arrange(link, part, space, year) -> analysis_data
   model <- inla(
-    cbind(zero, count) ~ 0 + zero_intercept + intercept +
-      f(
-        zero_part, model = "iid",
-        hyper = list(theta = list(prior = "pc.prec", param = c(0.1, 0.05)))
-      ) +
+    cbind(zero, count) ~ 0 +
+      zero_intercept + intercept +
       f(
         zero_cyear, model = "rw2",
         hyper = list(theta = list(prior = "pc.prec", param = c(0.02, 0.05)))
+      ) +
+      f(
+        zero_space, model = "iid",
+        hyper = list(theta = list(prior = "pc.prec", param = c(0.1, 0.05)))
       ) +
       f(
         cyear, model = "rw1",
         hyper = list(theta = list(prior = "pc.prec", param = c(0.1, 0.05)))
       ) +
       f(
-        space_int, model = "besagproper", graph = network,
-        hyper = list(
-          theta1 = list(prior = "pc.gamma", param = 3),
-          theta2 = list(prior = "pc.gamma", param = 3)
-        )
+        space_int, model = "besagproper", graph = network
       ),
-    family = c("binomial", "zeroinflatedpoisson0"),
+    family = c("binomial", "zeroinflatednbinomial0"),
     data = analysis_data,
     control.family = list(
       list(),
