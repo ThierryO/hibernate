@@ -3,26 +3,27 @@
 #' @param object_name the name of the object
 #' @inheritParams validate_data
 #' @export
-#' @importFrom assertthat assert_that is.count
+#' @importFrom assertthat assert_that is.string
 #' @importFrom dplyr %>% filter group_by inner_join left_join semi_join
 #' summarise transmute
 #' @importFrom git2rdata read_vc repository
 #' @importFrom rlang .data
 #' @importFrom tidyr replace_na
-aggregate_observations <- function(species, object_name, root) {
-  assert_that(is.count(species))
+aggregate_observations <- function(species_code, object_name, root) {
+  assert_that(is.string(species_code), is.string(object_name))
   if (!inherits(root, "git_repository")) {
     root <- repository(root)
   }
   assert_that(validate_data(root))
   all_species <- read_vc("species", root = root)
-  assert_that(any(all_species$id == species))
+  assert_that(any(all_species$code == species_code))
+  species_id <- all_species$id[all_species$code == species_code]
   selected_species <- all_species %>%
-    filter(.data$id %in% species | .data$parent %in% species)
+    filter(.data$id %in% species_id | .data$parent %in% species_id)
   while (length(species) < nrow(selected_species)) {
-    species <- selected_species$id
+    species_id <- selected_species$id
     selected_species <- all_species %>%
-      filter(.data$id %in% species | .data$parent %in% species)
+      filter(.data$id %in% species_id | .data$parent %in% species_id)
   }
   read_vc("survey_space_species", root) %>%
     filter(.data$species %in% selected_species$id) %>%
