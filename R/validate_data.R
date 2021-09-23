@@ -13,6 +13,10 @@ validate_data <- function(root) {
   survey_observer <- read_vc("survey_observer", root = root)
   assert_that(
     nrow(anti_join(survey_observer, survey, by = c("survey" = "id"))) == 0,
+    msg = "Some rows in `survery_observer` has no matching id in `survey`"
+  )
+  assert_that(
+    nrow(anti_join(survey_observer, observer, by = c("observer" = "id"))) == 0,
     msg = "Some rows in `survery_observer` has no matching id in `observer`"
   )
   object <- read_vc("object", root = root)
@@ -52,4 +56,5 @@ msg = "Some rows in `survey_space_species` has no matching id in `survey_space`"
     ) == 0,
     msg = "Some rows in `survey_space_species` has no matching id in `species`"
   )
+  return(TRUE)
 }
