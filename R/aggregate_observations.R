@@ -3,14 +3,15 @@
 #' @param object_name the name of the object
 #' @inheritParams validate_data
 #' @export
-#' @importFrom assertthat assert_that is.string
+#' @importFrom assertthat assert_that is.string noNA
 #' @importFrom dplyr %>% filter group_by inner_join left_join semi_join
 #' summarise transmute
 #' @importFrom git2rdata read_vc repository
 #' @importFrom rlang .data
 #' @importFrom tidyr replace_na
 aggregate_observations <- function(species_code, object_name, root) {
-  assert_that(is.string(species_code), is.string(object_name))
+  assert_that(is.string(species_code), noNA(species_code))
+  assert_that(is.string(object_name), noNA(object_name))
   if (!inherits(root, "git_repository")) {
     root <- repository(root)
   }
@@ -20,7 +21,7 @@ aggregate_observations <- function(species_code, object_name, root) {
   species_id <- all_species$id[all_species$code == species_code]
   selected_species <- all_species %>%
     filter(.data$id %in% species_id | .data$parent %in% species_id)
-  while (length(species) < nrow(selected_species)) {
+  while (length(species_id) < nrow(selected_species)) {
     species_id <- selected_species$id
     selected_species <- all_species %>%
       filter(.data$id %in% species_id | .data$parent %in% species_id)

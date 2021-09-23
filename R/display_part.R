@@ -15,7 +15,7 @@
 #' @importFrom ggplot2 aes aes_string coord_sf ggplot geom_sf geom_sf_label
 #' labs scale_fill_manual
 #' @importFrom git2rdata read_vc
-#' @importFrom sf read_sf st_cast st_centroid st_crs<- st_transform
+#' @importFrom sf read_sf st_bbox st_cast st_centroid st_transform
 #' @importFrom tidyr extract pivot_longer starts_with
 display_part <- function(
   part_id, root, label = c("code", "id", "none"), connection = FALSE,
