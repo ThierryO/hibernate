@@ -65,8 +65,7 @@ imputation_model <- function(
           count = ifelse(.data$observed > 0, .data$observed, NA),
           link = 2, intercept = 1, space_int = as.integer(.data$space)
         )
-    ) %>%
-    arrange(link, part, space, year) -> analysis_data
+    ) -> analysis_data
   model <- inla(
     cbind(zero, count) ~ 0 +
       zero_intercept + intercept +

@@ -14,7 +14,7 @@
 #' mutate row_number select summarise
 #' @importFrom ggplot2 aes aes_string coord_sf ggplot geom_sf geom_sf_label
 #' labs scale_fill_manual
-#' @importFrom git2rdata read_vc
+#' @importFrom git2rdata read_vc repository
 #' @importFrom sf read_sf st_bbox st_cast st_centroid st_transform
 #' @importFrom tidyr extract pivot_longer starts_with
 display_part <- function(
@@ -25,6 +25,9 @@ display_part <- function(
   label <- match.arg(label)
   assert_that(is.flag(connection), noNA(connection))
   assert_that(is.flag(rotate), noNA(rotate))
+  if (!inherits(root, "git_repository")) {
+    root <- repository(root)
+  }
   file.path(root$path, "..", "floor_plan.geojson") %>%
     read_sf() %>%
     inner_join(

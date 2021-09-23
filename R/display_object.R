@@ -1,6 +1,7 @@
 #' Display the object
+#' @inheritParams aggregate_observations
 #' @inheritParams display_part
-#' @inheritParams ggplot2::scale_fill_viridis_c
+#' @inheritParams ggplot2::discrete_scale
 #' @param extra_data an optional data.frame to fill the spaces.
 #' @param extra_var the name of the variable in `extra_data` to fill the spaces.
 #' @param legend_title title for the colour legend
@@ -90,7 +91,7 @@ display_object <- function(
       )
     ) +
     new_scale_fill() +
-    geom_sf(aes(fill = .data$extra))
+    geom_sf(aes(fill = .data$extra), size = 0.1)
   if (is.numeric(final$extra)) {
     p <- p +
       scale_fill_viridis_c(

@@ -7,8 +7,9 @@
 #' @importFrom assertthat assert_that is.count
 #' @importFrom dplyr %>% across bind_cols filter full_join mutate n select
 #' @importFrom INLA inla.posterior.sample
-#' @importFrom purrr map map2 map_dfc
-#' @importFrom stats rbinom rpois
+#' @importFrom purrr map map2 map_dfr
+#' @importFrom stats plogis quantile rbinom rnbinom
+#' @importFrom tibble rownames_to_column
 #' @importFrom tidyr replace_na
 impute <- function(model, level = c("object", "part", "space"), n_sim = 999) {
   assert_that(is.count(n_sim))
@@ -57,7 +58,7 @@ impute <- function(model, level = c("object", "part", "space"), n_sim = 999) {
       zero = rbinom(n(), size = 1, prob = plogis(.data$zero)),
       count = rnbinom(n(), size = .data$size, mu = exp(.data$count)),
       imputed = (1 - .data$zero) * .data$count,
-      space = factor(space, labels = levels(model$.args$data$space))
+      space = factor(.data$space, labels = levels(model$.args$data$space))
     ) %>%
     inner_join(
       model$.args$data %>%
@@ -72,8 +73,8 @@ impute <- function(model, level = c("object", "part", "space"), n_sim = 999) {
   ) %>%
     summarise(total = sum(.data$imputed), .groups = "drop_last") %>%
     summarise(
-      mean = mean(total), lcl = quantile(total, prob = 0.025),
-      ucl = quantile(total, prob = 0.975), .groups = "drop"
+      mean = mean(.data$total), lcl = quantile(.data$total, prob = 0.025),
+      ucl = quantile(.data$total, prob = 0.975), .groups = "drop"
     ) -> imputed_total
   model$.args$data %>%
     filter(.data$link == 2, !is.na(.data$observed)) %>%
