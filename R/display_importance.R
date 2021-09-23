@@ -19,8 +19,10 @@ display_importance <- function(
   root <- attr(model, "root")
   model$.args$data %>%
     filter(.data$link == 2) %>%
-    distinct(.data$part, .data$space, .data$space_int) %>%
-    inner_join(model$summary.random$space_int, by = c("space_int" = "ID")) %>%
+    distinct(.data$part, .data$space, .data$count_space) %>%
+    inner_join(
+      model$summary.random$count_space, by = c("count_space" = "ID")
+    ) %>%
     transmute(
       space = as.character(.data$space),
       .data$mean, lcl = .data$`0.025quant`, ucl = .data$`0.975quant`

@@ -42,7 +42,7 @@ imputation_model <- function(
       year = round_date(.data$date, unit = "years") %>%
         year(),
       space = factor(.data$space, levels = colnames(network)),
-      observed = .data$count
+      observed = .data$count, .data$undet
     ) %>%
     complete(year = min(.data$year):max(.data$year), .data$space) %>%
     mutate(cyear = .data$year - max(.data$year)) %>%
@@ -55,20 +55,28 @@ imputation_model <- function(
     transmute(
       zero_year = .data$year, zero_cyear = .data$cyear, .data$observed,
       zero_space = factor(.data$space), zero_intercept = 1,
-      zero = as.integer(.data$observed == 0), link = 1,
-      zero_space_int = as.integer(.data$space), zero_part = factor(.data$part)
+      zero = as.integer(.data$observed == 0), link = 1, ntrial = 1,
+      zero_space_int = as.integer(.data$space)
     ) %>%
     bind_rows(
       model_data %>%
-        mutate(
-          space = factor(.data$space), part = factor(.data$part),
+        transmute(
           count = ifelse(.data$observed > 0, .data$observed, NA),
-          link = 2, intercept = 1, space_int = as.integer(.data$space)
+          count_intercept = 1, count_cyear = .data$cyear, ntrial = 1,
+          link = 2, count_space = as.integer(.data$space), .data$year,
+          space = factor(.data$space), part = factor(.data$part),
+          .data$observed
+        ),
+      model_data %>%
+        transmute(
+          .data$undet, undet_intercept = 1, undet_space = factor(.data$space),
+          undet_year = .data$year, link = 3, space = factor(.data$space),
+          part = factor(.data$part), ntrial = replace_na(.data$observed, 1)
         )
     ) -> analysis_data
   model <- inla(
-    cbind(zero, count) ~ 0 +
-      zero_intercept + intercept +
+    cbind(zero, count, undet) ~ 0 +
+      zero_intercept +
       f(
         zero_cyear, model = "rw2",
         hyper = list(theta = list(prior = "pc.prec", param = c(0.02, 0.05)))
@@ -77,18 +85,26 @@ imputation_model <- function(
         zero_space, model = "iid",
         hyper = list(theta = list(prior = "pc.prec", param = c(0.1, 0.05)))
       ) +
+      count_intercept +
       f(
-        cyear, model = "rw1",
+        count_cyear, model = "rw1",
         hyper = list(theta = list(prior = "pc.prec", param = c(0.1, 0.05)))
       ) +
       f(
-        space_int, model = "besagproper", graph = network
+        count_space, model = "besagproper", graph = network
+      ) +
+      undet_intercept +
+      f(
+        undet_space, model = "iid",
+        hyper = list(theta = list(prior = "pc.prec", param = c(1, 0.05)))
       ),
-    family = c("binomial", "zeroinflatednbinomial0"),
+    family = c("binomial", "zeroinflatednbinomial0", "binomial"),
     data = analysis_data,
+    Ntrials = analysis_data$ntrial,
     control.family = list(
       list(),
-      list(hyper = list(theta = list(intial = -10, fixed = TRUE)))
+      list(hyper = list(theta = list(intial = -10, fixed = TRUE))),
+      list()
     ),
     control.predictor = list(link = analysis_data$link),
     control.compute = list(waic = TRUE, config = TRUE, graph = TRUE)
