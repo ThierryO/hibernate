@@ -4,18 +4,20 @@ Title: Store and Analyse Data from Bats Counts in Hibernacula
 Version: 0.0.1
 Authors@R:
     person(given = "Thierry",
-             family = "Onkelinx",
-             role = c("aut", "cre"),
-             email = "hibernate@muscardinus.be",
-             comment = c(ORCID = "0000-0001-8804-4216"))
+           family = "Onkelinx",
+           role = c("aut", "cre"),
+           email = "hibernate@muscardinus.be",
+           comment = c(ORCID = "0000-0001-8804-4216"))
 Description: A standardised way to store and analyse data.
 License: GPL-3
+URL: https://github.com/thierryo/hibernate
+BugReports: https://github.com/thierryo/hibernate/issues
 Imports:
     assertthat,
     dplyr,
-    git2rdata
-URL: https://github.com/thierryo/hibernate
-BugReports: https://github.com/thierryo/hibernate/issues
+    git2rdata,
+    rlang,
+    tidyr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

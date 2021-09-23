@@ -1,5 +1,21 @@
 description: Configuration file for checklist::check_pkg()
 package: yes
 allowed:
-  warnings: []
-  notes: []
+  warnings:
+  - motivation: Adding units tests in a later phase.
+    value: |-
+      checking for code which exercises the package ... WARNING
+      No examples, no tests, no vignettes
+  - motivation: This is not an INBO package.
+    value: Research Institute for Nature and Forest must be listed as copyright holder
+      and funder and use info@inbo.be as email.
+  notes:
+  - motivation: Package not intended for CRAN.
+    value: |-
+      checking CRAN incoming feasibility ... NOTE
+      Maintainer: 'Thierry Onkelinx <hibernate@muscardinus.be>'
+
+      New submission
+citation_roles:
+- aut
+- cre
