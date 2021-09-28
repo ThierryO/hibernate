@@ -6,7 +6,7 @@
 \usage{
 display_importance(
   model,
-  labels = c(-0.8, -0.5, 0, 2, 5),
+  labels = c(0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 0.75, 1, 1.33, 2, 5, 10, 20, 50, 100),
   crs = 31370,
   legend_title = "relative\\nimportance"
 )

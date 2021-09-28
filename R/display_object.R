@@ -11,8 +11,8 @@
 #' @importFrom assertthat assert_that has_name is.flag is.string noNA
 #' @importFrom dplyr %>% arrange filter group_by inner_join left_join semi_join
 #' starts_with summarise ungroup
-#' @importFrom ggplot2 ggplot coord_sf geom_sf scale_fill_manual
-#' scale_fill_viridis_c scale_fill_viridis_d waiver
+#' @importFrom ggplot2 ggplot coord_sf element_blank geom_sf scale_fill_manual
+#' scale_fill_viridis_c scale_fill_viridis_d theme waiver
 #' @importFrom ggnewscale new_scale_fill
 #' @importFrom git2rdata repository read_vc
 #' @importFrom rlang .data
@@ -102,5 +102,7 @@ display_object <- function(
       legend_title, na.value = NA, labels = labels, breaks = breaks
     )
   }
-  p + coord_sf(datum = crs)
+  p +
+    coord_sf(datum = crs) +
+    theme(panel.background = element_blank())
 }
