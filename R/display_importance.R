@@ -12,6 +12,7 @@
 #' @importFrom rlang .data
 #' @importFrom sf read_sf st_bbox st_drop_geometry st_transform
 #' @importFrom tidyr pivot_longer extract
+#' @importFrom utils head tail
 display_importance <- function(
   model,
   labels = c(
