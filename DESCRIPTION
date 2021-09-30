@@ -3,10 +3,7 @@ Package: hibernate
 Title: Store and Analyse Data from Bats Counts in Hibernacula
 Version: 0.0.1
 Authors@R:
-    person(given = "Thierry",
-           family = "Onkelinx",
-           role = c("aut", "cre"),
-           email = "hibernate@muscardinus.be",
+    person("Thierry", "Onkelinx", , "hibernate@muscardinus.be", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216"))
 Description: A standardised way to store and analyse data.
 License: GPL-3
