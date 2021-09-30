@@ -87,7 +87,7 @@ display_object <- function(
     geom_sf(aes(fill = structure), colour = NA, show.legend = FALSE) +
     scale_fill_manual(
       values = c(
-        space = "transparent", wall = "black", collapsed = "transparent"
+        space = "transparent", wall = "grey75", collapsed = "transparent"
       )
     ) +
     new_scale_fill() +
