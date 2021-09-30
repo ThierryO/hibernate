@@ -1,6 +1,6 @@
 # hibernate 0.0.1
 
-* Add `validate_data()`.
+* Add the required functions.
 
 # hibernate 0.0.0
 
