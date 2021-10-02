@@ -1,5 +1,26 @@
 description: Configuration file for checklist::check_pkg()
 package: yes
 allowed:
-  warnings: []
+  warnings:
+  - motivation: INLA not available on CRAN.
+    value: |-
+      checking CRAN incoming feasibility ... WARNING
+      Maintainer: 'Thierry Onkelinx <hibernate@muscardinus.be>'
+
+      New submission
+
+      Strong dependencies not in mainstream repositories:
+        INLA
+      Availability using Additional_repositories specification:
+        INLA   yes   https://inla.r-inla-download.org/R/testing
+  - motivation: Adding units tests in a later phase.
+    value: |-
+      checking for code which exercises the package ... WARNING
+      No examples, no tests, no vignettes
+  - motivation: This is not an INBO package.
+    value: Research Institute for Nature and Forest must be listed as copyright holder
+      and funder and use info@inbo.be as email.
   notes: []
+citation_roles:
+- aut
+- cre

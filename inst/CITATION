@@ -1,0 +1,12 @@
+citHeader("To cite `hibernate` in publications please use:")
+# begin checklist entry
+citEntry(
+  entry = "Manual",
+  title = "hibernate: Store and Analyse Data from Bats Counts in Hibernacula. Version 0.0.1",
+  author = c(person(given = "Thierry", family = "Onkelinx")),
+  year = 2021,
+  url = "https://github.com/thierryo/hibernate",
+  abstract = "A standardised way to store and analyse data.",
+  textVersion = "Onkelinx, Thierry (2021) hibernate: Store and Analyse Data from Bats Counts in Hibernacula. Version 0.0.1. https://github.com/thierryo/hibernate",
+)
+# end checklist entry
