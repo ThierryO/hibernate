@@ -12,8 +12,8 @@
 #' @importFrom assertthat assert_that is.count is.flag noNA
 #' @importFrom dplyr %>% arrange bind_rows filter group_by inner_join left_join
 #' mutate row_number select summarise
-#' @importFrom ggplot2 aes aes_string coord_sf ggplot geom_sf geom_sf_label
-#' labs scale_fill_manual
+#' @importFrom ggplot2 aes aes_string element_blank coord_sf ggplot geom_sf
+#' geom_sf_label labs scale_fill_manual theme
 #' @importFrom git2rdata read_vc repository
 #' @importFrom sf read_sf st_bbox st_cast st_centroid st_transform
 #' @importFrom tidyr extract pivot_longer starts_with
@@ -74,7 +74,8 @@ display_part <- function(
     geom_sf(aes(fill = .data$structure), show.legend = FALSE) +
     scale_fill_manual(
       values = c(space = "transparent", wall = "grey25", collapsed = "grey75")
-    )
+    ) +
+    theme(panel.background = element_blank())
   if (connection) {
     read_vc("space_connection", root = root) %>%
       mutate(connection_id = row_number()) -> connections
@@ -102,8 +103,7 @@ display_part <- function(
   if (label != "none") {
     p <- p +
       geom_sf_label(
-        data = centroids,
-        aes_string(label = label)
+        data = centroids, aes_string(label = label)
       ) +
       labs(title = part_title$name)
   }
