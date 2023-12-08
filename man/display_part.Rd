@@ -10,7 +10,11 @@ display_part(
   label = c("code", "id", "none"),
   connection = FALSE,
   rotate = TRUE,
-  crs = 31370
+  crs = 31370,
+  label_border = TRUE,
+  label_colour = "blue",
+  wall = "grey25",
+  collapsed = "grey75"
 )
 }
 \arguments{

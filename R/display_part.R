@@ -13,13 +13,14 @@
 #' @importFrom dplyr %>% arrange bind_rows filter group_by inner_join left_join
 #' mutate row_number select summarise
 #' @importFrom ggplot2 aes aes_string element_blank coord_sf ggplot geom_sf
-#' geom_sf_label labs scale_fill_manual theme
+#' geom_sf_label geom_sf_text labs scale_fill_manual theme
 #' @importFrom git2rdata read_vc repository
 #' @importFrom sf read_sf st_bbox st_cast st_centroid st_transform
 #' @importFrom tidyr extract pivot_longer starts_with
 display_part <- function(
   part_id, root, label = c("code", "id", "none"), connection = FALSE,
-  rotate = TRUE, crs = 31370
+  rotate = TRUE, crs = 31370, label_border = TRUE, label_colour = "blue",
+  wall = "grey25", collapsed = "grey75"
 ) {
   assert_that(is.count(part_id))
   label <- match.arg(label)
