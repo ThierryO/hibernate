@@ -66,9 +66,19 @@ display_part <- function(
       geometry = (.data$geometry + .data$shift) * rotation(angle$angle)
     ) -> part_data
   suppressWarnings({
-    part_data %>%
-      filter(!is.na(.data$code)) %>%
+    part_data |>
+      filter(!is.na(.data$code)) |>
       st_centroid() -> centroids
+    centroids |>
+      st_drop_geometry() |>
+      select("id") |>
+      left_join(read_vc("space_label_offset", root = root), by = "id") |>
+      mutate(across(c("dx", "dy"), ~replace_na(.x, 0))) |>
+      pivot_longer(-"id") |>
+      arrange(.data$name) |>
+      group_by(.data$id) |>
+      summarise(label_shift = list(.data$value)) |>
+      inner_join(x = centroids, by = "id") -> centroids
   })
   p <- ggplot(part_data) +
     geom_sf(aes(fill = .data$structure), show.legend = FALSE) +
@@ -101,11 +111,21 @@ display_part <- function(
     }
   }
   if (label != "none") {
-    p <- p +
-      geom_sf_label(
-        data = centroids, aes_string(label = label)
-      ) +
-      labs(title = part_title$name)
+    centroids |>
+      mutate(geometry = .data$geometry + .data$label_shift) -> centroids
+    if (label_border) {
+      p <- p +
+        geom_sf_label(
+          data = centroids, aes_string(label = label), colour = label_colour
+        ) +
+        labs(title = part_title$name)
+    } else {
+      p <- p +
+        geom_sf_text(
+          data = centroids, aes_string(label = label), colour = label_colour
+        ) +
+        labs(title = part_title$name)
+    }
   }
   return(p + coord_sf(datum = crs))
 }
