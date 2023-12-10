@@ -40,7 +40,7 @@ display_object <- function(
     st_transform(crs = crs) -> geoms
   if (shift) {
     parts %>%
-      select(.data$id, starts_with("offset")) %>%
+      select("id", starts_with("offset")) |>
       pivot_longer(-.data$id) %>%
       extract(
         .data$name, c("floor", "direction"), "offset(.*)_(.)", convert = TRUE
