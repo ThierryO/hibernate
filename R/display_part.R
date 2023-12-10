@@ -32,19 +32,32 @@ display_part <- function(
   if (!inherits(root, "git_repository")) {
     root <- repository(root)
   }
-  file.path(root$path, "..", "floor_plan.geojson") %>%
-    read_sf() %>%
+  file.path(root$path, "..", "floor_plan.geojson") |>
+    read_sf() |>
+    semi_join(
+      read_vc("part", root = root) |>
+        filter(.data$id == part_id) |>
+        semi_join(
+          x = read_vc("part", root = root),
+          by = "object"
+        ) |>
+        semi_join(
+          x = read_vc("floor_plan", root = root), by = c("part" = "id")
+        ),
+      by = "id"
+    ) |>
+    st_transform(crs = crs) -> object
+  object |>
     inner_join(
       read_vc("floor_plan", root = root) %>%
         filter(.data$part == part_id),
       by = "id"
     ) %>%
     left_join(read_vc("space", root = root), by = "id") %>%
-    select("id", "structure", "floor", "code") %>%
-    st_transform(crs = crs) -> part_base
+    select("id", "structure", "floor", "code") -> part_base
   read_vc("part", root = root) %>%
     filter(.data$id == part_id) -> part_title
-  bb <- st_bbox(part_base)
+  bb <- st_bbox(object)
   part_title %>%
     pivot_longer(starts_with("offset"), names_to = "var") %>%
     extract(
@@ -89,7 +102,7 @@ display_part <- function(
     scale_fill_manual(
       values = c(space = "transparent", wall = wall, collapsed = collapsed)
     ) +
-    theme(panel.background = element_blank())
+    theme(panel.background = element_blank(), axis.title = element_blank())
   if (connection) {
     read_vc("space_connection", root = root) %>%
       mutate(connection_id = row_number()) -> connections
@@ -133,7 +146,7 @@ display_part <- function(
     p <- p +
       labs(title = part_title$name)
   }
-  return(p + coord_sf(datum = crs))
+  return(p + coord_sf(datum = crs, expand = FALSE))
 }
 
 #' @importFrom assertthat assert_that is.number
