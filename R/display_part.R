@@ -7,6 +7,8 @@
 #' @param connection Display optional connections between the centroids.
 #' @param rotate Rotate the part along the general direction of the object.
 #' Default to `TRUE`.
+#' @param title Display the part name as title.
+#' Defaults to `TRUE`.
 #' @inheritParams sf::st_transform
 #' @export
 #' @importFrom assertthat assert_that is.count is.flag noNA
@@ -20,12 +22,13 @@
 display_part <- function(
   part_id, root, label = c("code", "id", "none"), connection = FALSE,
   rotate = TRUE, crs = 31370, label_border = TRUE, label_colour = "blue",
-  wall = "grey25", collapsed = "grey75"
+  wall = "grey25", collapsed = "grey75", title = TRUE
 ) {
   assert_that(is.count(part_id))
   label <- match.arg(label)
   assert_that(is.flag(connection), noNA(connection))
   assert_that(is.flag(rotate), noNA(rotate))
+  assert_that(is.flag(title), noNA(title))
   if (!inherits(root, "git_repository")) {
     root <- repository(root)
   }
@@ -84,7 +87,7 @@ display_part <- function(
   p <- ggplot(part_data) +
     geom_sf(aes(fill = .data$structure), show.legend = FALSE) +
     scale_fill_manual(
-      values = c(space = "transparent", wall = "grey25", collapsed = "grey75")
+      values = c(space = "transparent", wall = wall, collapsed = collapsed)
     ) +
     theme(panel.background = element_blank())
   if (connection) {
@@ -118,15 +121,17 @@ display_part <- function(
       p <- p +
         geom_sf_label(
           data = centroids, aes_string(label = label), colour = label_colour
-        ) +
-        labs(title = part_title$name)
+        )
     } else {
       p <- p +
         geom_sf_text(
           data = centroids, aes_string(label = label), colour = label_colour
-        ) +
-        labs(title = part_title$name)
+        )
     }
+  }
+  if (title) {
+    p <- p +
+      labs(title = part_title$name)
   }
   return(p + coord_sf(datum = crs))
 }
