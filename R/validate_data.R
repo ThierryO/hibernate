@@ -1,4 +1,4 @@
-#' Validata the raw data repository
+#' Validate the raw data repository
 #' @param root Either a `git_repository` object or the path to a git repository
 #' @export
 #' @importFrom assertthat assert_that noNA
