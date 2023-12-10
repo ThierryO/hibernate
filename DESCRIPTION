@@ -1,7 +1,7 @@
 Type: Package
 Package: hibernate
 Title: Store and Analyse Data from Bats Counts in Hibernacula
-Version: 0.0.1
+Version: 0.0.2
 Authors@R:
     person("Thierry", "Onkelinx", , "hibernate@muscardinus.be", role = c("aut", "cph", "cre"),
            comment = c(ORCID = "0000-0001-8804-4216"))

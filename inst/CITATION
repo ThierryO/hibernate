@@ -2,12 +2,12 @@ citHeader("To cite `hibernate` in publications please use:")
 # begin checklist entry
 bibentry(
   bibtype = "Manual",
-  title = "hibernate: Store and Analyse Data from Bats Counts in Hibernacula. Version 0.0.1",
+  title = "hibernate: Store and Analyse Data from Bats Counts in Hibernacula. Version 0.0.2",
   author = c( author = c(person(given = "Thierry", family = "Onkelinx"))),
   year = 2023,
   url = "https://github.com/ThierryO/hibernate/",
   abstract = "A standardised way to store and analyse data.",
-  textVersion = "Onkelinx, Thierry (2023) hibernate: Store and Analyse Data from Bats Counts in Hibernacula. Version 0.0.1. https://github.com/ThierryO/hibernate/",
+  textVersion = "Onkelinx, Thierry (2023) hibernate: Store and Analyse Data from Bats Counts in Hibernacula. Version 0.0.2. https://github.com/ThierryO/hibernate/",
   keywords = "hiberating bats",
 )
 # end checklist entry

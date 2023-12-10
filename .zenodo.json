@@ -1,6 +1,6 @@
 {
   "title": "hibernate: Store and Analyse Data from Bats Counts in Hibernacula",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "GPL-3.0",
   "upload_type": "software",
   "description": "<p>A standardised way to store and analyse data.<\/p>",

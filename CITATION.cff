@@ -16,4 +16,4 @@ license: GPL-3.0
 repository-code: https://github.com/ThierryO/hibernate/
 type: software
 abstract: "A standardised way to store and analyse data."
-version: 0.0.1
+version: 0.0.2
