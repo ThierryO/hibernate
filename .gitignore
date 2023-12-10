@@ -4,4 +4,6 @@
 .Ruserdata
 .httr-oauth
 *.html
+*.log
+*.pdf
 docs

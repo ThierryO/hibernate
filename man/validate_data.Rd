@@ -2,7 +2,7 @@
 % Please edit documentation in R/validate_data.R
 \name{validate_data}
 \alias{validate_data}
-\title{Validata the raw data repository}
+\title{Validate the raw data repository}
 \usage{
 validate_data(root)
 }
@@ -10,5 +10,5 @@ validate_data(root)
 \item{root}{Either a \code{git_repository} object or the path to a git repository}
 }
 \description{
-Validata the raw data repository
+Validate the raw data repository
 }

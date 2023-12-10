@@ -15,7 +15,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 build
 status](https://github.com/thierryo/hibernate/workflows/check%20package%20on%20main/badge.svg)](https://github.com/thierryo/hibernate/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/thierryo/hibernate/branch/main/graph/badge.svg)](https://codecov.io/gh/thierryo/hibernate?branch=main)
+coverage](https://codecov.io/gh/thierryo/hibernate/branch/main/graph/badge.svg)](https://app.codecov.io/gh/thierryo/hibernate?branch=main)
 ![GitHub code size in
 bytes](https://img.shields.io/github/languages/code-size/thierryo/hibernate.svg)
 ![GitHub repo
