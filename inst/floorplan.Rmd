@@ -1,0 +1,106 @@
+---
+params:
+  root: ../../hibernate_data
+  object: Fort Lier
+  scale: 200
+title: "Plan `r params$object`"
+lang: nl
+output:
+  pdf_document:
+    latex_engine: xelatex
+    extra_dependencies:
+        geometry: ["left=10mm", "right=10mm", "top=10mm", "bottom=15mm"]
+        lscape: null
+    includes:
+      in_header: header.tex
+documentclass: report
+---
+
+```{r setup, include = FALSE}
+library(git2rdata)
+library(ggplot2)
+library(hibernate)
+library(knitr)
+library(maptiles)
+library(sf)
+library(tidyterra)
+library(tidyverse)
+root <- repository(params$root)
+theme_set(theme_minimal(base_size = 8))
+update_geom_defaults("text", list(size = 2.5))
+opts_chunk$set(echo = FALSE, message = FALSE, fig.height = 2.06)
+```
+
+```{r ligging-overzicht, fig.cap = sprintf("Ligging %s", params$object)}
+globaal <- display_object(
+  params$object, root = root, shift = FALSE, rotate = FALSE
+)
+globaal$data |>
+  st_union() |>
+  st_buffer(dist = 10000) |>
+  st_transform(crs = 3857) |>
+  get_tiles(zoom = 11, crop = TRUE) -> tile
+ggplot() +
+  geom_spatraster_rgb(data = tile) +
+  geom_sf(data = globaal$data, fill = "red", colour = "red", linewidth = 1) +
+  coord_sf(expand = FALSE)
+```
+
+```{r ligging, fig.cap = sprintf("Ligging %s", params$object)}
+globaal$data |>
+  st_union() |>
+  st_buffer(dist = 2000) |>
+  st_transform(crs = 3857) |>
+  get_tiles(zoom = 14, crop = TRUE) -> tile
+ggplot() +
+  geom_spatraster_rgb(data = tile) +
+  geom_sf(data = globaal$data, fill = "red", colour = "red", linewidth = 1) +
+  coord_sf(expand = FALSE)
+```
+
+```{r ligging-detail, fig.cap = sprintf("Ligging %s", params$object)}
+globaal$data |>
+  st_union() |>
+  st_buffer(dist = 500) |>
+  st_transform(crs = 3857) |>
+  get_tiles(zoom = 15, crop = TRUE) -> tile
+ggplot() +
+  geom_spatraster_rgb(data = tile) +
+  geom_sf(data = globaal$data, fill = "red", colour = "red", linewidth = 1) +
+  coord_sf(expand = FALSE)
+```
+
+
+```{r globaal-ratio}
+globaal <- display_object(params$object, root = root)
+fig_dim <- scale_display(globaal)
+```
+
+```{r globaal-begin-landscape, eval = attr(fig_dim, "landscape"), results = "asis"}
+cat("\\blandscape")
+```
+
+```{r globaal, fig.height = fig_dim[1], fig.width = fig_dim[2], fig.align = "center", fig.cap = sprintf("Overzicht %s", params$object)}
+globaal
+```
+
+```{r globaal-end-landscape, eval = attr(fig_dim, "landscape"), results = "asis"}
+cat("\\elandscape")
+```
+
+```{r delen, results = "asis"}
+read_vc("object", root = root) |>
+  filter(.data$name == params$object) -> object
+read_vc("part", root = root) |>
+  semi_join(object, by = c("object" = "id")) |>
+  transmute(
+    rmd = map2_chr(
+      .data$id, .data$name,
+      ~knit_expand("_part.Rmd", this_part = .x, this_title = .y)
+    )
+  ) |>
+  pull(.data$rmd) |>
+  paste(collapse = "\n") -> rmd
+knit(text = rmd, quiet = TRUE) |>
+  cat()
+```

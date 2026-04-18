@@ -1,0 +1,31 @@
+{
+  "title": "hibernate: Store and Analyse Data from Bats Counts in Hibernacula",
+  "version": "0.0.2",
+  "license": "GPL-3.0",
+  "upload_type": "software",
+  "description": "<p>A standardised way to store and analyse data.<\/p>",
+  "keywords": [
+    "hiberating bats"
+  ],
+  "access_right": "open",
+  "language": "eng",
+  "contributors": [
+    {
+      "name": "Onkelinx, Thierry",
+      "orcid": "0000-0001-8804-4216",
+      "type": "RightsHolder"
+    },
+    {
+      "name": "Onkelinx, Thierry",
+      "orcid": "0000-0001-8804-4216",
+      "type": "ContactPerson"
+    }
+  ],
+  "creators": [
+    {
+      "name": "Onkelinx, Thierry",
+      "orcid": "0000-0001-8804-4216"
+    }
+  ],
+  "communities": []
+}

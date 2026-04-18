@@ -1,0 +1,29 @@
+```{r part-setup-{{this_part}}}
+if (interactive()) {
+  read_vc("part", root = root) |>
+    slice_sample(n = 1) |>
+    pull(id) -> this_part
+} else {
+  this_part <- {{this_part}}
+}
+```
+
+```{r part-size-{{this_part}}}
+plot_part <- display_part(
+  this_part, root = root, label_border = FALSE, wall = "grey80",
+  collapsed = "grey90", label_colour = "black", title = FALSE
+)
+fig_dim <- scale_display(plot_part)
+```
+
+```{r part-begin-landscape-{{this_part}}, eval = attr(fig_dim, "landscape"), results = "asis"}
+cat("\\blandscape")
+```
+
+```{r fig-part-code-{{this_part}}, fig.height = fig_dim[1], fig.width = fig_dim[2], fig.align = "center", fig.cap = "{{this_title}}"}
+plot_part
+```
+
+```{r part-end-landscape-{{this_part}}, eval = attr(fig_dim, "landscape"), results = "asis"}
+cat("\\elandscape")
+```

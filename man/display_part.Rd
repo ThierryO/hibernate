@@ -10,7 +10,12 @@ display_part(
   label = c("code", "id", "none"),
   connection = FALSE,
   rotate = TRUE,
-  crs = 31370
+  crs = 31370,
+  label_border = TRUE,
+  label_colour = "blue",
+  wall = "grey25",
+  collapsed = "grey75",
+  title = TRUE
 )
 }
 \arguments{
@@ -27,6 +32,9 @@ display_part(
 Default to \code{TRUE}.}
 
 \item{crs}{target coordinate reference system: object of class `crs`, or input string for \link[sf]{st_crs}}
+
+\item{title}{Display the part name as title.
+Defaults to \code{TRUE}.}
 }
 \description{
 Display the floor plan of a part
